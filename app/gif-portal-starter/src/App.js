@@ -176,6 +176,22 @@ const App = () => {
     await getGifList();
   };
 
+  const tipUser = async (userAddress) => {
+    const provider = getProvider();
+
+    const transaction = new web3.Transaction().add(
+      web3.SystemProgram.transfer({
+        fromPubkey: new PublicKey(walletAddress),
+        toPubkey: new PublicKey(userAddress),
+        lamports: web3.LAMPORTS_PER_SOL / 100,
+      })
+    );
+
+    const signature = await provider.send(transaction);
+
+    console.log("Transaction Signature", signature);
+  };
+
   /*
    * When our component first mounts, let's check to see if we have a connected
    * Phantom Wallet
@@ -247,7 +263,12 @@ const App = () => {
                       <span>{item.score}</span>
                       <button onClick={() => downvoteGif(index)}>DOWN</button>
                     </div>
-                    <span>{item.userAddress}</span>
+                    <div>
+                      <span>{item.userAddress}</span>
+                      <button onClick={() => tipUser(item.userAddress)}>
+                        TIP
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
