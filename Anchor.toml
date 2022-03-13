@@ -1,0 +1,14 @@
+[features]
+seeds = false
+[programs.devnet]
+gif_portal_starter = "74yjuu16wdN7E3SxtZBB4A3PxoHyDRihmDQBckJSs6BK"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "devnet"
+wallet = "/Users/joe/.config/solana/id.json"
+
+[scripts]
+test = "node tests/gif-portal-starter.js" 
