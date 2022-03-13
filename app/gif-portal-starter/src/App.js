@@ -113,7 +113,6 @@ const App = () => {
     try {
       const provider = getProvider();
       const program = new Program(idl, programID, provider);
-      console.log("ping");
       await program.rpc.startStuffOff({
         accounts: {
           baseAccount: baseAccount.publicKey,
@@ -151,6 +150,30 @@ const App = () => {
       console.log("Error in getGifList: ", error);
       setGifList(null);
     }
+  };
+
+  const upvoteGif = async (gifIndex) => {
+    const provider = getProvider();
+    const program = new Program(idl, programID, provider);
+
+    await program.rpc.upvoteGif(gifIndex, {
+      accounts: {
+        baseAccount: baseAccount.publicKey,
+      },
+    });
+    await getGifList();
+  };
+
+  const downvoteGif = async (gifIndex) => {
+    const provider = getProvider();
+    const program = new Program(idl, programID, provider);
+
+    await program.rpc.downvoteGif(gifIndex, {
+      accounts: {
+        baseAccount: baseAccount.publicKey,
+      },
+    });
+    await getGifList();
   };
 
   /*
@@ -219,6 +242,11 @@ const App = () => {
                 {gifList.map((item, index) => (
                   <div className="gif-item" key={index}>
                     <img src={item.gifLink} />
+                    <div>
+                      <button onClick={() => upvoteGif(index)}>UP</button>
+                      <span>{item.score}</span>
+                      <button onClick={() => downvoteGif(index)}>DOWN</button>
+                    </div>
                     <span>{item.userAddress}</span>
                   </div>
                 ))}

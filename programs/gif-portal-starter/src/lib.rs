@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::entrypoint::ProgramResult;
 
-declare_id!("74yjuu16wdN7E3SxtZBB4A3PxoHyDRihmDQBckJSs6BK");
+declare_id!("5uc4BamUaQAZji96aATvVgsBc1m3diARwCdyr9vxhLVx");
 
 #[program]
 pub mod gif_portal_starter {
@@ -21,11 +21,28 @@ pub mod gif_portal_starter {
     let item = ItemStruct {
       gif_link: gif_link.to_string(),
       user_address: *user.to_account_info().key,
+      score: 0,
     };
 		
 	// Add it to the gif_list vector.
     base_account.gif_list.push(item);
     base_account.total_gifs += 1;
+    Ok(())
+  }
+
+  pub fn upvote_gif(ctx: Context<UpdateGif>, gif_index: i32) -> ProgramResult {
+    let base_account = &mut ctx.accounts.base_account;
+
+    base_account.gif_list[gif_index as usize].score += 1;
+
+    Ok(())
+  }
+
+  pub fn downvote_gif(ctx: Context<UpdateGif>, gif_index: i32) -> ProgramResult {
+    let base_account = &mut ctx.accounts.base_account;
+
+    if base_account.gif_list[gif_index as usize].score > 0 { base_account.gif_list[gif_index as usize].score -= 1; };
+
     Ok(())
   }
 }
@@ -48,11 +65,18 @@ pub struct AddGif<'info> {
   pub user: Signer<'info>,
 }
 
+#[derive(Accounts)]
+pub struct UpdateGif<'info> {
+  #[account(mut)]
+  pub base_account: Account<'info, BaseAccount>,
+}
+
 // Create a custom struct for us to work with.
 #[derive(Debug, Clone, AnchorSerialize, AnchorDeserialize)]
 pub struct ItemStruct {
     pub gif_link: String,
     pub user_address: Pubkey,
+    pub score: i32,
 }
 
 #[account]

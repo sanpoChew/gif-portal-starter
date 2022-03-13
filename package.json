@@ -1,8 +1,8 @@
 {
   "scripts": {
     "build": "anchor build",
-    "postbuild": "cp target/idl/gif_portal_starter.json app/gif-portal-starter/src/idl.json",
-    "deploy": "anchor deploy"
+    "deploy": "anchor deploy",
+    "postdeploy": "cp target/idl/gif_portal_starter.json app/gif-portal-starter/src/idl.json"
   },
   "dependencies": {
     "@project-serum/anchor": "^0.22.1"
